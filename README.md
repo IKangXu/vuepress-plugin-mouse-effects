@@ -31,7 +31,24 @@
 ```js
 plugins: [
     [require('@vuepress-ikangxu/vuepress-plugin-mouse-effects'), {
-      
+      type: 'particle', // 暂时只内置了一个特效
+      style: {
+        borderRadius: '50%', // 形状
+        zIndex: 2,
+        colors: ["#FF0000", "#FF7D00", "#FFFF00", "#00FF00", "#00FFFF", "#0000FF", "#FF00FF"], // 颜色
+        r: {
+          min: 5, // 半径最小值
+          max: 15 // 半径最大值
+        },
+        dx: {
+          min: -10, // 横向偏移量最小值
+          max: 10 // 横向偏移量最大值
+        },
+        dy: {
+          min: -10, // 纵向偏移量最小值
+          max: 10  // 纵向偏移量最大值
+        }
+      }
     }]
 ]
 ```

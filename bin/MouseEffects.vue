@@ -37,10 +37,10 @@ export default {
       ball.id = this.GUID();
       ball.x = x;
       ball.y = y;
-      ball.r = this.random(5, 15);
-      ball.color = this.randomColor(["#FF0000", "#FF7D00", "#FFFF00", "#00FF00", "#00FFFF", "#0000FF", "#FF00FF"]);
-      ball.dx = this.random(-10, 10);
-      ball.dy = this.random(-10, 10);
+      ball.r = this.random(define_r_min, define_r_max);
+      ball.color = this.randomColor(define_colors);
+      ball.dx = this.random(define_dx_min, define_dx_max);
+      ball.dy = this.random(define_dy_min, define_dy_max);
 
       ball.update = function() {
           this.x += this.dx;
@@ -64,9 +64,9 @@ export default {
         ball.style.top = this.y + "px";
         ball.style.left = this.x + "px";
         ball.style.left = this.x + "px";
-        ball.style.borderRadius = "50%";
+        ball.style.borderRadius = define_border_radius;
         ball.style.backgroundColor = this.color;
-        ball.style.zIndex=2;
+        ball.style.zIndex=define_z_index;
         ball.className='mouse-ball';
         
         document.querySelector("body").append(ball);
