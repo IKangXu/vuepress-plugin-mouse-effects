@@ -12,23 +12,45 @@ export default {
   },
   created() {
     let _self=this;
-    document.onmousemove = function(e){
-      _self.createBall(e.clientX, e.clientY);
-      _self.createBall(e.clientX, e.clientY);
-    }
-    setInterval(function (){
-      var mouseBalls = document.getElementsByClassName('mouse-ball');
-      if(mouseBalls){
-        for(var i=0;i<mouseBalls.length;i++){
-          mouseBalls[i].remove();
+
+    if(define_type === 'particle') {
+      document.onmousemove = function(e){
+        _self.createBall(e.clientX, e.clientY);
+        _self.createBall(e.clientX, e.clientY);
+      }
+      setInterval(function (){
+        var mouseBalls = document.getElementsByClassName('mouse-ball');
+        if(mouseBalls){
+          for(var i=0;i<mouseBalls.length;i++){
+            mouseBalls[i].remove();
+          }
         }
+        for(let i=0;i<_self.balls.length;i++) {
+          let ball = _self.balls[i];
+          ball.update();
+          ball.render();
+        }
+      }, 50);
+    } else if(define_type === 'click-word') {
+      let words = ["富强", "民主", "文明", "和谐", "自由", "平等", "公正" ,"法治", "爱国", "敬业", "诚信", "友善"];
+      document.onclick = function(e) {
+        let wordSpan = document.createElement("span");
+        wordSpan.style.width = this.r + "px";
+        wordSpan.style.height = this.r + "px";
+        wordSpan.style.position = "fixed";
+        wordSpan.style.top = (e.clientY - 25) + "px";
+        wordSpan.style.left = e.clientX + "px";
+        wordSpan.style.color = _self.randomColor(["#FF0000", "#FF7D00", "#FFFF00", "#00FF00", "#00FFFF", "#0000FF", "#FF00FF"]);
+        wordSpan.style.fontSize = "12px";
+        wordSpan.style.zIndex=2;
+        wordSpan.className='click-word';
+        wordSpan.innerText=words[_self.random(0,words.length-1)];
+
+        document.querySelector("body").append(wordSpan);
       }
-      for(let i=0;i<_self.balls.length;i++) {
-        let ball = _self.balls[i];
-        ball.update();
-        ball.render();
-      }
-    }, 50);
+    }
+
+    
   },
   methods: {
     createBall(x, y){
@@ -62,7 +84,6 @@ export default {
         ball.style.height = this.r + "px";
         ball.style.position = "fixed";
         ball.style.top = this.y + "px";
-        ball.style.left = this.x + "px";
         ball.style.left = this.x + "px";
         ball.style.borderRadius = define_border_radius;
         ball.style.backgroundColor = this.color;
