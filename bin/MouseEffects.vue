@@ -60,7 +60,7 @@ export default {
         let ball = document.createElement("div");
         ball.style.width = this.r + "px";
         ball.style.height = this.r + "px";
-        ball.style.position = "absolute";
+        ball.style.position = "fixed";
         ball.style.top = this.y + "px";
         ball.style.left = this.x + "px";
         ball.style.left = this.x + "px";
