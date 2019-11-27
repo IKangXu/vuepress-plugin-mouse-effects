@@ -7,92 +7,80 @@ export default {
   name: 'MouseEffects',
   data() {
     return {
-     balls: []
+     entities: []
     };
   },
   created() {
     let _self=this;
-
-    if(define_type === 'particle') {
-      document.onmousemove = function(e){
-        _self.createBall(e.clientX, e.clientY);
-        _self.createBall(e.clientX, e.clientY);
-      }
-      setInterval(function (){
-        var mouseBalls = document.getElementsByClassName('mouse-ball');
-        if(mouseBalls){
-          for(var i=0;i<mouseBalls.length;i++){
-            mouseBalls[i].remove();
-          }
-        }
-        for(let i=0;i<_self.balls.length;i++) {
-          let ball = _self.balls[i];
-          ball.update();
-          ball.render();
-        }
-      }, 50);
-    } else if(define_type === 'click-word') {
-      let words = ["富强", "民主", "文明", "和谐", "自由", "平等", "公正" ,"法治", "爱国", "敬业", "诚信", "友善"];
-      document.onclick = function(e) {
-        let wordSpan = document.createElement("span");
-        wordSpan.style.width = this.r + "px";
-        wordSpan.style.height = this.r + "px";
-        wordSpan.style.position = "fixed";
-        wordSpan.style.top = (e.clientY - 25) + "px";
-        wordSpan.style.left = e.clientX + "px";
-        wordSpan.style.color = _self.randomColor(["#FF0000", "#FF7D00", "#FFFF00", "#00FF00", "#00FFFF", "#0000FF", "#FF00FF"]);
-        wordSpan.style.fontSize = "12px";
-        wordSpan.style.zIndex=2;
-        wordSpan.className='click-word';
-        wordSpan.innerText=words[_self.random(0,words.length-1)];
-
-        document.querySelector("body").append(wordSpan);
-      }
-    }
-
-    
+    _self.effects(_self);
+    _self.render(_self);
+    _self.madeCursor();
   },
   methods: {
-    createBall(x, y){
-      let _self=this;
-      let ball = {};
-      ball.id = this.GUID();
-      ball.x = x;
-      ball.y = y;
-      ball.r = this.random(define_r_min, define_r_max);
-      ball.color = this.randomColor(define_colors);
-      ball.dx = this.random(define_dx_min, define_dx_max);
-      ball.dy = this.random(define_dy_min, define_dy_max);
+    effects(_self) {
+      if(define_type === 'particle') {
+        document.onmousemove = function(e){
+          _self.createEntity(e.clientX, e.clientY);
+          _self.createEntity(e.clientX, e.clientY);
+        }
+      }else if(define_type === 'click-word') {
+        document.onclick = function(e) {
+          _self.createEntity(e.clientX, e.clientY);
+        }
+      }
+    },
+    createEntity(x, y){
+      let _self=this, entity = {};
+      entity.id = this.GUID();
+      entity.x = x;
+      entity.y = y;
+      entity.r = this.random(define_r.min, define_r.max);
+      entity.color = this.randomColor(define_colors);
+      entity.dx = this.random(define_dx.min, define_dx.max);
+      entity.dy = this.random(define_dy.min, define_dy.max);
 
-      ball.update = function() {
+      if(define_type === 'click-word') {
+        entity.word = define_words[_self.random(0,define_words.length-1)];
+      }
+
+      entity.update = function() {
           this.x += this.dx;
           this.y += this.dy;
-          this.r -= 1;
+          this.r -= 0.5;
           if(this.r <= 0){
-            _self.balls.splice(_self.findIndex(_self.balls, this), 1);
+            _self.entities.splice(_self.findIndex(_self.entities, this), 1);
           }
       }
 
-      ball.render = function (){
+      entity.render = function (){
         let _self=this;
         if(this.r <= 0){
           return;
         }
       
-        let ball = document.createElement("div");
-        ball.style.width = this.r + "px";
-        ball.style.height = this.r + "px";
-        ball.style.position = "fixed";
-        ball.style.top = this.y + "px";
-        ball.style.left = this.x + "px";
-        ball.style.borderRadius = define_border_radius;
-        ball.style.backgroundColor = this.color;
-        ball.style.zIndex=define_z_index;
-        ball.className='mouse-ball';
+        let entity = document.createElement("div");
+        entity.style.width = this.r + "px";
+        entity.style.height = this.r + "px";
+        entity.style.position = "fixed";
+        entity.style.top = this.y + "px";
+        entity.style.left = this.x + "px";
         
-        document.querySelector("body").append(ball);
+        if(define_type === 'particle') {
+          entity.style.backgroundColor = this.color;
+          entity.style.borderRadius = define_border_radius;
+        } else if(define_type === 'click-word') {
+          entity.style.color = this.color;
+          entity.style.fontSize = define_font_size + "px";
+          entity.innerText = this.word;
+          entity.style.width = (this.word.length * define_font_size) + "px";
+        }
+        
+        entity.style.zIndex=define_z_index;
+        entity.className='mouse-'+define_type;
+        
+        document.querySelector("body").append(entity);
       }
-      _self.balls.push(ball);
+      _self.entities.push(entity);
     },
     random(start, end) {
       if (!end) {
@@ -125,6 +113,33 @@ export default {
           return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
       }
       return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
+    },
+    madeCursor() {
+      if(define_cursor) {
+        let reg=/(http|https):\/\/([\w.]+\/?)\S*.cur$/; 
+        if(reg.test(define_cursor)) {
+          document.body.style.cursor = "url("+define_cursor+"),auto";
+          return;
+        }
+        document.body.style.cursor = "url(https://ikangxu-static.oss-cn-beijing.aliyuncs.com/images/cur/"+define_cursor+".cur),auto";
+      }
+    },
+    render(_self) {
+      if(define_type) {
+        setInterval(function (){
+          var mouseEntities = document.getElementsByClassName('mouse-'+define_type);
+          if(mouseEntities){
+            for(var i=0;i<mouseEntities.length;i++){
+              mouseEntities[i].remove();
+            }
+          }
+          for(let i=0;i<_self.entities.length;i++) {
+            let entity = _self.entities[i];
+            entity.update();
+            entity.render();
+          }
+        }, 50);
+      }
     }
   }
 };
