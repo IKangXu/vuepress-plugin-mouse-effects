@@ -34,7 +34,37 @@
 然后再`vuepress-theme-reco`主题的`index.js`中进行如下配置即可使用
 
 ```js
-[require('@vuepress-ikangxu/vuepress-plugin-mouse-effects'), {
+[require('@ikangxu/vuepress-plugin-mouse-effects'), {
+  type: 'click-word', // 暂时只内置了一个特效   内置的特效有 particle|click-word
+  words: ["富强", "民主", "文明", "和谐", "自由", "平等", "公正" ,"法治", "爱国", "敬业", "诚信", "友善"], // click-word效果需要用到的文字提示
+  style: {
+    cursor: 'Altr_Vnd', // 支持自定义cursor，没有则为默认样式
+    borderRadius: '50%', // 形状 particle效果需要用到
+    zIndex: 2,
+    colors: ["#FF0000", "#FF7D00", "#FFFF00", "#00FF00", "#00FFFF", "#0000FF", "#FF00FF"], // 颜色
+    fontSize: 14, // click-word效果需要用到的文字显示大小
+    r: {
+      min: 5, // 半径最小值
+      max: 15 // 半径最大值
+    },
+    dx: {
+      min: -10, // 横向偏移量最小值
+      max: 10 // 横向偏移量最大值
+    },
+    dy: {
+      min: -10, // 纵向偏移量最小值
+      max: 10  // 纵向偏移量最大值
+    }
+  }
+}]
+```
+
+```shell
+npm i @ikangxu/vuepress-plugin-mouse-effects -D
+```
+
+```js
+['@ikangxu/vuepress-plugin-mouse-effects', {
   type: 'click-word', // 暂时只内置了一个特效   内置的特效有 particle|click-word
   words: ["富强", "民主", "文明", "和谐", "自由", "平等", "公正" ,"法治", "爱国", "敬业", "诚信", "友善"], // click-word效果需要用到的文字提示
   style: {
